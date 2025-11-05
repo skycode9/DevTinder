@@ -127,15 +127,22 @@ authRoutes.post("/login", async (req, res) => {
 });
 
 authRoutes.post("/logout", userAuth, async (req, res) => {
-  const isProduction = process.env.NODE_ENV === "production";
-  res.cookie("token", null, {
-    expires: new Date(Date.now()),
-    httpOnly: true,
-    secure: isProduction,
-    sameSite: isProduction ? "none" : "lax",
-    domain: isProduction ? undefined : "localhost",
-  });
-  res.status(200).json({ msg: "Logout Successfully..!" });
+  try {
+    const cookieOptions = {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+      maxAge: 0,
+      path: "/",
+    };
+
+    res.cookie("token", "", cookieOptions).status(200).json({
+      success: true,
+      msg: "Logout Successfully..!",
+    });
+  } catch (error) {
+    res.status(500).json({ error: "Logout failed" });
+  }
 });
 
 module.exports = authRoutes;

@@ -37,13 +37,24 @@ authRoutes.post("/signup", async (req, res) => {
     //   domain: isProduction ? undefined : "localhost",
     // });
 
-    res.cookie("token", token, {
-      expires: new Date(Date.now() + 2 * 24 * 3600000),
+    // res.cookie("token", token, {
+    //   expires: new Date(Date.now() + 2 * 24 * 3600000),
+    //   httpOnly: true,
+    //   secure: true,
+    //   sameSite: "None",
+    //   // domain: isProduction ? undefined : "localhost",
+    // });
+
+    const cookieOptions = {
       httpOnly: true,
-      secure: true,
-      sameSite: "None",
-      // domain: isProduction ? undefined : "localhost",
-    });
+      secure: process.env.NODE_ENV === "production", // HTTPS pe true
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+      path: "/",
+    };
+
+    // Cookie set karte waqt:
+    res.cookie("token", token, cookieOptions);
 
     res.status(200).json({
       msg: "UserData Added Succesfully",
@@ -81,15 +92,27 @@ authRoutes.post("/login", async (req, res) => {
     // Create a JWT Token
     const token = await isUserExits.getJWT();
 
-    // Add the token to cookie and send the response back to the user
-    const isProduction = process.env.NODE_ENV === "production";
-    res.cookie("token", token, {
-      expires: new Date(Date.now() + 2 * 24 * 3600000),
+    // // Add the token to cookie and send the response back to the user
+    // const isProduction = process.env.NODE_ENV === "production";
+    // res.cookie("token", token, {
+    //   expires: new Date(Date.now() + 2 * 24 * 3600000),
+    //   httpOnly: true,
+    //   secure: true,
+    //   sameSite: "None",
+    //   domain: isProduction ? undefined : "localhost",
+    // });
+
+    // Login/Signup route me cookie options:
+    const cookieOptions = {
       httpOnly: true,
-      secure: true,
-      sameSite: "None",
-      domain: isProduction ? undefined : "localhost",
-    });
+      secure: process.env.NODE_ENV === "production", // HTTPS pe true
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+      path: "/",
+    };
+
+    // Cookie set karte waqt:
+    res.cookie("token", token, cookieOptions);
 
     res.status(200).json({
       msg: "Login Successfully",

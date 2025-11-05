@@ -17,18 +17,14 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-const allowedOrigins = [
-  "http://localhost:5173",
-  "https://dev-tinder-frontend-react.vercel.app",
-  process.env.FRONTEND_URL,
-].filter(Boolean);
+// CORS setup (app.js me)
+const corsOptions = {
+  origin: process.env.FRONTEND_URL || "http://localhost:5173",
+  credentials: true, // BAHUT IMPORTANT!
+  optionsSuccessStatus: 200,
+};
 
-app.use(
-  cors({
-    origin: allowedOrigins,
-    credentials: true,
-  })
-);
+app.use(cors(corsOptions));
 
 // ============================================
 // HEALTH CHECK ENDPOINTS

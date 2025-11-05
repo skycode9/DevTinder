@@ -1,0 +1,14 @@
+{
+  "name": "devtinder",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server/src/app.js",
+  "scripts": {
+    "dev": "node server/src/app.js",
+    "build": "npm install && npm install --prefix client && npm run build --prefix client",
+    "start": "node server/src/app.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

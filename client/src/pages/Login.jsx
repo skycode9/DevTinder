@@ -1,238 +1,4 @@
-// import axios from "axios";
-// import React, { useState } from "react";
-// import { useDispatch } from "react-redux";
-// import { addUser } from "../utils/userSlice";
-// import { useNavigate } from "react-router-dom";
-// import BASE_URL from "../config/baseurl";
-// const Login = () => {
-//   const [isNewUser, setIsNewUser] = useState(false);
-//   const [firstName, setFirstName] = useState("");
-//   const [lastName, setLastName] = useState("");
-//   const [emailId, setEmailId] = useState("");
-//   const [password, setPassword] = useState("");
-//   const [authError, setAuthError] = useState("");
-//   const [emailError, setEmailError] = useState("");
-//   const [passwordError, setPasswordError] = useState("");
-//   const dispatch = useDispatch();
-//   const navigate = useNavigate();
-
-//   const validateForm = () => {
-//     let isValid = true;
-
-//     // Reset errors
-//     setEmailError("");
-//     setPasswordError("");
-
-//     // Email validation
-//     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-//     if (!emailId || !emailRegex.test(emailId)) {
-//       setEmailError("Please enter a valid email address");
-//       isValid = false;
-//     }
-
-//     // Password validation
-//     if (!password || password.length < 6) {
-//       setPasswordError("Password must be at least 6 characters long");
-//       isValid = false;
-//     }
-
-//     return isValid;
-//   };
-
-//   const handleLogin = async (e) => {
-//     e.preventDefault();
-//     if (!validateForm()) return;
-//     try {
-//       const result = await axios.post(
-//         BASE_URL + "/login",
-//         {
-//           emailId,
-//           password,
-//         },
-//         { withCredentials: true }
-//       );
-//       const userData = result?.data?.data;
-//       dispatch(addUser(userData));
-
-//       setEmailId("");
-//       setPassword("");
-//       navigate("/feed");
-//     } catch (error) {
-//       console.log("Axios Error: ", error);
-//       setAuthError(error?.response?.data?.msg || "Something went wrong");
-//     }
-//   };
-
-//   const handleSignUp = async (e) => {
-//     e.preventDefault();
-//     if (!validateForm()) return;
-//     try {
-//       const res = await axios.post(
-//         BASE_URL + "/signup",
-//         {
-//           firstName,
-//           lastName,
-//           emailId,
-//           password,
-//         },
-//         { withCredentials: true }
-//       );
-//       const newUserData = res?.data?.data;
-//       dispatch(addUser(newUserData));
-//       setFirstName("");
-//       setLastName("");
-//       setEmailId("");
-//       setPassword("");
-//       navigate("/profile");
-//     } catch (error) {
-//       console.log("Axios Error: " + error);
-//       console.log("Error Message: " + error?.response?.data?.err);
-//       setAuthError(error?.response?.data?.err || "Something went wrong");
-//     }
-//   };
-
-//   return (
-//     <div className="min-h-screen bg-base-200 flex items-center justify-center">
-//       <div className="card w-full max-w-sm shadow-2xl bg-base-100">
-//         <div className="card-body">
-//           <h2 className="text-center text-2xl font-bold">
-//             {isNewUser ? "Sign Up" : "Login"}
-//           </h2>
-
-//           <form>
-//             {isNewUser && (
-//               <>
-//                 <div className="form-control">
-//                   <label className="label py-1">
-//                     <span className="label-text">First Name</span>
-//                   </label>
-//                   <input
-//                     type="text"
-//                     placeholder="Enter First Name"
-//                     className="input input-bordered"
-//                     required
-//                     value={firstName}
-//                     onChange={(e) => setFirstName(e.target.value)}
-//                   />
-//                 </div>
-
-//                 <div className="form-control mt-4">
-//                   <label className="label py-1">
-//                     <span className="label-text">Last Name</span>
-//                   </label>
-//                   <input
-//                     type="text"
-//                     placeholder="Enter Last Name"
-//                     className="input input-bordered"
-//                     required
-//                     value={lastName}
-//                     onChange={(e) => setLastName(e.target.value)}
-//                   />
-//                 </div>
-//               </>
-//             )}
-
-//             {/* Email */}
-//             <div className="form-control mt-4">
-//               <label className="label py-1">
-//                 <span className="label-text">Email</span>
-//               </label>
-//               <input
-//                 type="email"
-//                 placeholder="Enter email"
-//                 className="input input-bordered"
-//                 required
-//                 value={emailId}
-//                 onChange={(e) => setEmailId(e.target.value)}
-//               />
-//             </div>
-//             {emailError && (
-//               <p className="text-red-500 text-sm mt-1">{emailError}</p>
-//             )}
-
-//             {/* Password */}
-//             <div className="form-control mt-4">
-//               <label className="label py-1">
-//                 <span className="label-text">Password</span>
-//               </label>
-//               <input
-//                 type="password"
-//                 placeholder="Enter password"
-//                 className="input input-bordered"
-//                 required
-//                 value={password}
-//                 onChange={(e) => setPassword(e.target.value)}
-//               />
-//             </div>
-//             {passwordError && (
-//               <p className="text-red-500 text-sm mt-1">{passwordError}</p>
-//             )}
-
-//             {/* Submit Button */}
-//             <div className="form-control mt-4">
-//               {isNewUser ? (
-//                 <button className="btn btn-primary" onClick={handleSignUp}>
-//                   SignUp
-//                 </button>
-//               ) : (
-//                 <button className="btn btn-primary" onClick={handleLogin}>
-//                   Login
-//                 </button>
-//               )}
-//             </div>
-//             {!isNewUser && (
-//               <label className="label mt-3">
-//                 <a href="#" className="label-text-alt link link-hover">
-//                   Forgot password?
-//                 </a>
-//               </label>
-//             )}
-
-//             <div className="mt-3">
-//               {isNewUser ? (
-//                 <p>
-//                   Existing User?
-//                   <span
-//                     className="underline cursor-pointer ml-2"
-//                     onClick={() => setIsNewUser((prev) => !prev)}
-//                   >
-//                     Login Here
-//                   </span>
-//                 </p>
-//               ) : (
-//                 <p>
-//                   New User?
-//                   <span
-//                     className="underline cursor-pointer ml-2"
-//                     onClick={() => setIsNewUser((prev) => !prev)}
-//                   >
-//                     SignUp Here
-//                   </span>
-//                 </p>
-//               )}
-//             </div>
-
-//             {authError && (
-//               <p className="text-red-500 shadow-2xl">{authError}</p>
-//             )}
-//           </form>
-
-//           {/* Divider */}
-//           <div className="divider">OR</div>
-
-//           {/* Google Login (example) */}
-//           <button className="btn btn-outline w-full">
-//             Continue with Google
-//           </button>
-//         </div>
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default Login;
-
-// pages/Login.jsx - Improved Version
+// pages/Login.jsx - Fixed Version
 import axios from "axios";
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -257,6 +23,8 @@ const Login = () => {
 
   // Error & Loading States
   const [errors, setErrors] = useState({
+    firstName: "",
+    lastName: "",
     email: "",
     password: "",
     auth: "",
@@ -285,7 +53,13 @@ const Login = () => {
 
   // Form validation
   const validateForm = () => {
-    const newErrors = { email: "", password: "", auth: "" };
+    const newErrors = {
+      firstName: "",
+      lastName: "",
+      email: "",
+      password: "",
+      auth: "",
+    };
     let isValid = true;
 
     // Email validation
@@ -310,11 +84,11 @@ const Login = () => {
     // Additional validation for signup
     if (isNewUser) {
       if (!formData.firstName?.trim()) {
-        newErrors.auth = "First name is required";
+        newErrors.firstName = "First name is required";
         isValid = false;
       }
       if (!formData.lastName?.trim()) {
-        newErrors.auth = "Last name is required";
+        newErrors.lastName = "Last name is required";
         isValid = false;
       }
     }
@@ -338,7 +112,7 @@ const Login = () => {
           emailId: formData.emailId,
           password: formData.password,
         },
-        { withCredentials: true }
+        { withCredentials: true },
       );
 
       const userData = result?.data?.data;
@@ -377,7 +151,7 @@ const Login = () => {
           emailId: formData.emailId,
           password: formData.password,
         },
-        { withCredentials: true }
+        { withCredentials: true },
       );
 
       const newUserData = res?.data?.data;
@@ -402,8 +176,24 @@ const Login = () => {
   // Toggle between Login and Signup
   const toggleAuthMode = () => {
     setIsNewUser((prev) => !prev);
-    setErrors({ email: "", password: "", auth: "" });
-    setFormData({ firstName: "", lastName: "", emailId: "", password: "" });
+    setErrors({
+      firstName: "",
+      lastName: "",
+      email: "",
+      password: "",
+      auth: "",
+    });
+    setFormData({
+      firstName: "",
+      lastName: "",
+      emailId: "",
+      password: "",
+    });
+  };
+
+  // Dismiss auth error
+  const dismissAuthError = () => {
+    setErrors((prev) => ({ ...prev, auth: "" }));
   };
 
   // Show loading while redirecting
@@ -440,11 +230,20 @@ const Login = () => {
                     type="text"
                     name="firstName"
                     placeholder="Enter first name"
-                    className="input input-bordered"
+                    className={`input input-bordered ${
+                      errors.firstName ? "input-error" : ""
+                    }`}
                     value={formData.firstName}
                     onChange={handleChange}
                     disabled={loading}
                   />
+                  {errors.firstName && (
+                    <label className="label">
+                      <span className="label-text-alt text-error">
+                        {errors.firstName}
+                      </span>
+                    </label>
+                  )}
                 </div>
 
                 <div className="form-control">
@@ -455,11 +254,20 @@ const Login = () => {
                     type="text"
                     name="lastName"
                     placeholder="Enter last name"
-                    className="input input-bordered"
+                    className={`input input-bordered ${
+                      errors.lastName ? "input-error" : ""
+                    }`}
                     value={formData.lastName}
                     onChange={handleChange}
                     disabled={loading}
                   />
+                  {errors.lastName && (
+                    <label className="label">
+                      <span className="label-text-alt text-error">
+                        {errors.lastName}
+                      </span>
+                    </label>
+                  )}
                 </div>
               </div>
             )}
@@ -523,7 +331,7 @@ const Login = () => {
               </label>
             )}
 
-            {/* Auth Error */}
+            {/* Auth Error with Close Button */}
             {errors.auth && (
               <div className="alert alert-error mt-4">
                 <svg
@@ -531,15 +339,15 @@ const Login = () => {
                   className="stroke-current shrink-0 h-6 w-6"
                   fill="none"
                   viewBox="0 0 24 24"
+                ></svg>
+                <span className="text-sm flex-1">{errors.auth}</span>
+                <button
+                  type="button"
+                  className="btn btn-sm btn-ghost btn-circle"
+                  onClick={dismissAuthError}
                 >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
-                  />
-                </svg>
-                <span className="text-sm">{errors.auth}</span>
+                  ✕
+                </button>
               </div>
             )}
 
@@ -577,36 +385,6 @@ const Login = () => {
               </p>
             </div>
           </form>
-
-          {/* Divider */}
-          <div className="divider">OR</div>
-
-          {/* Google Login */}
-          <button className="btn btn-outline w-full" disabled={loading}>
-            <svg
-              className="w-5 h-5 mr-2"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
-                fill="#4285F4"
-              />
-              <path
-                d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
-                fill="#34A853"
-              />
-              <path
-                d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
-                fill="#FBBC05"
-              />
-              <path
-                d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
-                fill="#EA4335"
-              />
-            </svg>
-            Continue with Google
-          </button>
         </div>
       </div>
     </div>

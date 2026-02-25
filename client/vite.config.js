@@ -6,7 +6,7 @@ import tailwindcss from "@tailwindcss/vite";
 export default defineConfig({
   plugins: [react(), tailwindcss()],
   server: {
-    port: 3030, // 👈 yahan apna port number daal do
+    port: 5173, // 👈 yahan apna port number daal do
     open: true, // optional: browser auto open
   },
 });

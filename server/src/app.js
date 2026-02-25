@@ -57,12 +57,14 @@ const userRouter = require("./routes/userRouter");
 
 app.use("/api", authRouter, profileRouter, requestRouter, userRouter);
 
-const path = require("path");
-const DIRNAME = path.resolve();
-app.use(express.static(path.join(DIRNAME, "client", "dist")));
-app.use("/*", (_, res) => {
-  res.sendFile(path.resolve(DIRNAME, "client", "dist", "index.html"));
-});
+if (process.env.NODE_ENV === "production") {
+  const path = require("path");
+  const DIRNAME = path.resolve();
+  app.use(express.static(path.join(DIRNAME, "client", "dist")));
+  app.use("/*", (_, res) => {
+    res.sendFile(path.resolve(DIRNAME, "client", "dist", "index.html"));
+  });
+}
 
 // ============================================
 // ERROR HANDLING
@@ -99,7 +101,9 @@ connectDB()
 
     app.listen(PORT, () => {
       console.log(`🚀 Server running on http://localhost:${PORT}`);
-      console.log(`🌐 Allowed origins: http://localhost:3030`);
+      console.log(
+        `🌐 Allowed origins: ${process.env.FRONTEND_URL || "http://localhost:5173"}`,
+      );
     });
   })
   .catch((err) => {
